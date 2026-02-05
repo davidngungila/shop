@@ -202,7 +202,8 @@
         
         <!-- Mobile Card View -->
         <div class="block sm:hidden divide-y divide-gray-200">
-            @forelse($sales ?? [] as $sale)
+            @if(isset($sales) && $sales->count() > 0)
+            @foreach($sales as $sale)
             <div class="p-4 space-y-3">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
@@ -238,7 +239,13 @@
                     </div>
                     <div>
                         <span class="text-gray-500">Items:</span>
-                        <div class="font-medium text-gray-900 mt-0.5">{{ $sale->items->count() ?? 0 }} items ({{ number_format($sale->items->sum('quantity') ?? 0) }} units)</div>
+                        <div class="font-medium text-gray-900 mt-0.5">
+                            @php
+                                $itemCount = $sale->items ? $sale->items->count() : 0;
+                                $itemQuantity = $sale->items ? $sale->items->sum('quantity') : 0;
+                            @endphp
+                            {{ $itemCount }} items ({{ number_format($itemQuantity) }} units)
+                        </div>
                     </div>
                     <div>
                         <span class="text-gray-500">Payment:</span>
@@ -274,7 +281,8 @@
                     </a>
                 </div>
             </div>
-            @empty
+            @endforeach
+            @else
             <div class="p-12 text-center">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
@@ -282,7 +290,7 @@
                 <h3 class="mt-2 text-sm font-medium text-gray-900">No sales found</h3>
                 <p class="mt-1 text-sm text-gray-500">Try adjusting your filters or create a new sale.</p>
             </div>
-            @endforelse
+            @endif
         </div>
 
         <!-- Desktop Table View -->
@@ -301,7 +309,8 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($sales ?? [] as $sale)
+                    @if(isset($sales) && $sales->count() > 0)
+                    @foreach($sales as $sale)
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">#{{ $sale->invoice_number ?? str_pad($sale->id, 6, '0', STR_PAD_LEFT) }}</div>
@@ -313,8 +322,12 @@
                             @endif
                         </td>
                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $sale->items->count() ?? 0 }} items</div>
-                            <div class="text-xs text-gray-500">{{ number_format($sale->items->sum('quantity') ?? 0) }} units</div>
+                            @php
+                                $itemCount = $sale->items ? $sale->items->count() : 0;
+                                $itemQuantity = $sale->items ? $sale->items->sum('quantity') : 0;
+                            @endphp
+                            <div class="text-sm text-gray-900">{{ $itemCount }} items</div>
+                            <div class="text-xs text-gray-500">{{ number_format($itemQuantity) }} units</div>
                         </td>
                         <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 capitalize">
@@ -379,7 +392,8 @@
                             </div>
                         </td>
                     </tr>
-                    @empty
+                    @endforeach
+                    @else
                     <tr>
                         <td colspan="8" class="px-6 py-12 text-center">
                             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -389,7 +403,7 @@
                             <p class="mt-1 text-sm text-gray-500">Try adjusting your filters or create a new sale.</p>
                         </td>
                     </tr>
-                    @endforelse
+                    @endif
                 </tbody>
             </table>
         </div>
