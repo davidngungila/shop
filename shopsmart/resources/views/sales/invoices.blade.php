@@ -142,21 +142,21 @@
     @endif
 
     <!-- Advanced Filters -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 md:p-6">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-            <h2 class="text-base sm:text-lg font-semibold text-gray-900">Filters & Search</h2>
-            <div class="flex gap-2 flex-wrap">
-                <button onclick="setDateRange('today')" class="px-2 sm:px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200">Today</button>
-                <button onclick="setDateRange('week')" class="px-2 sm:px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200">This Week</button>
-                <button onclick="setDateRange('month')" class="px-2 sm:px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200">This Month</button>
-                <button onclick="setDateRange('year')" class="px-2 sm:px-3 py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200">This Year</button>
+            <h2 class="text-sm sm:text-base md:text-lg font-semibold text-gray-900">Filters & Search</h2>
+            <div class="flex gap-1.5 sm:gap-2 flex-wrap">
+                <button onclick="setDateRange('today')" class="px-2 sm:px-3 py-1.5 sm:py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors">Today</button>
+                <button onclick="setDateRange('week')" class="px-2 sm:px-3 py-1.5 sm:py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors">This Week</button>
+                <button onclick="setDateRange('month')" class="px-2 sm:px-3 py-1.5 sm:py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors">This Month</button>
+                <button onclick="setDateRange('year')" class="px-2 sm:px-3 py-1.5 sm:py-1 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors">This Year</button>
             </div>
         </div>
-        <form method="GET" action="{{ route('sales.invoices') }}" class="space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search invoice #, customer..." class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+        <form method="GET" action="{{ route('sales.invoices') }}" class="space-y-3 sm:space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search invoice #, customer..." class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                 
-                <select name="payment_method" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <select name="payment_method" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                     <option value="">All Payment Methods</option>
                     <option value="cash" {{ request('payment_method') == 'cash' ? 'selected' : '' }}>Cash</option>
                     <option value="card" {{ request('payment_method') == 'card' ? 'selected' : '' }}>Card</option>
@@ -164,20 +164,20 @@
                     <option value="bank_transfer" {{ request('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
                 </select>
 
-                <select name="customer_id" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <select name="customer_id" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
                     <option value="">All Customers</option>
                     @foreach($customers ?? [] as $customer)
                     <option value="{{ $customer->id }}" {{ request('customer_id') == $customer->id ? 'selected' : '' }}>{{ $customer->name }}</option>
                     @endforeach
                 </select>
 
-                <input type="date" name="date_from" id="date_from" value="{{ request('date_from', $dateFrom ?? '') }}" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                <input type="date" name="date_to" id="date_to" value="{{ request('date_to', $dateTo ?? '') }}" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <input type="date" name="date_from" id="date_from" value="{{ request('date_from', $dateFrom ?? '') }}" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <input type="date" name="date_to" id="date_to" value="{{ request('date_to', $dateTo ?? '') }}" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
             </div>
             
-            <div class="flex gap-2">
-                <button type="submit" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Apply Filters</button>
-                <a href="{{ route('sales.invoices') }}" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Clear All</a>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <button type="submit" class="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm sm:text-base bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">Apply Filters</button>
+                <a href="{{ route('sales.invoices') }}" class="w-full sm:w-auto px-4 sm:px-6 py-2 text-sm sm:text-base bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors text-center">Clear All</a>
             </div>
         </form>
     </div>
@@ -284,13 +284,13 @@
 
     <!-- Invoices Table -->
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div class="px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <h2 class="text-lg font-semibold text-gray-900">Invoices List</h2>
-            <span class="text-sm text-gray-500">{{ $sales->total() ?? 0 }} total invoices</span>
+        <div class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <h2 class="text-sm sm:text-base md:text-lg font-semibold text-gray-900">Invoices List</h2>
+            <span class="text-xs sm:text-sm text-gray-500">{{ $sales->total() ?? 0 }} total invoices</span>
         </div>
-        <div class="overflow-x-auto -mx-4 sm:mx-0">
+        <div class="overflow-x-auto -mx-3 sm:-mx-4 md:mx-0">
             <!-- Mobile Card View -->
-            <div class="block sm:hidden divide-y divide-gray-200">
+            <div class="block md:hidden divide-y divide-gray-200">
                 @forelse($sales ?? [] as $sale)
                 <div class="p-4 space-y-3">
                     <div class="flex items-center justify-between">
@@ -366,50 +366,54 @@
             </div>
 
             <!-- Desktop Table View -->
-            <table class="min-w-full divide-y divide-gray-200 hidden sm:table">
+            <table class="min-w-full divide-y divide-gray-200 hidden md:table">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
-                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
-                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
-                        <th class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                        <th class="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                        <th class="px-4 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($sales ?? [] as $sale)
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">#{{ $sale->invoice_number ?? str_pad($sale->id, 6, '0', STR_PAD_LEFT) }}</div>
+                        <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            <div class="text-xs sm:text-sm font-medium text-gray-900">#{{ $sale->invoice_number ?? str_pad($sale->id, 6, '0', STR_PAD_LEFT) }}</div>
                         </td>
-                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900 font-medium">{{ $sale->customer->name ?? 'Walk-in Customer' }}</div>
+                        <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            <div class="text-xs sm:text-sm text-gray-900 font-medium">{{ $sale->customer->name ?? 'Walk-in Customer' }}</div>
                             @if($sale->customer)
                             <div class="text-xs text-gray-500">{{ $sale->customer->email ?? $sale->customer->phone ?? '' }}</div>
                             @endif
                         </td>
-                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $sale->items->count() ?? 0 }} items</div>
-                            <div class="text-xs text-gray-500">{{ number_format($sale->items->sum('quantity') ?? 0) }} units</div>
+                        <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            @php
+                                $itemCount = $sale->items ? $sale->items->count() : 0;
+                                $itemQuantity = $sale->items ? $sale->items->sum('quantity') : 0;
+                            @endphp
+                            <div class="text-xs sm:text-sm text-gray-900">{{ $itemCount }} items</div>
+                            <div class="text-xs text-gray-500">{{ number_format($itemQuantity) }} units</div>
                         </td>
-                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                        <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
                             <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 capitalize">
                                 {{ str_replace('_', ' ', $sale->payment_method ?? 'cash') }}
                             </span>
                         </td>
-                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900">{{ $sale->created_at->setTimezone('Africa/Dar_es_Salaam')->format('M d, Y') }}</div>
+                        <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap">
+                            <div class="text-xs sm:text-sm text-gray-900">{{ $sale->created_at->setTimezone('Africa/Dar_es_Salaam')->format('M d, Y') }}</div>
                             <div class="text-xs text-gray-500">{{ $sale->created_at->setTimezone('Africa/Dar_es_Salaam')->format('h:i A') }}</div>
                         </td>
-                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-right">
-                            <div class="text-sm font-semibold text-gray-900">TZS {{ number_format($sale->total, 0) }}</div>
+                        <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-right">
+                            <div class="text-xs sm:text-sm font-semibold text-gray-900">TZS {{ number_format($sale->total, 0) }}</div>
                             @if($sale->discount > 0)
                             <div class="text-xs text-gray-500">Discount: TZS {{ number_format($sale->discount, 0) }}</div>
                             @endif
                         </td>
-                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
                             <div class="flex items-center justify-end space-x-2">
                                 <a href="{{ route('sales.show', $sale) }}" class="text-purple-600 hover:text-purple-900" title="View Details">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -447,8 +451,10 @@
 
         <!-- Pagination -->
         @if(isset($sales) && $sales->hasPages())
-        <div class="px-4 sm:px-6 py-4 border-t border-gray-200">
-            {{ $sales->links() }}
+        <div class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 border-t border-gray-200">
+            <div class="overflow-x-auto">
+                {{ $sales->links() }}
+            </div>
         </div>
         @endif
     </div>

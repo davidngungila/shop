@@ -64,14 +64,14 @@ Route::resource('stock-movements', StockMovementController::class);
     Route::get('/pos', [POSController::class, 'index'])->name('pos.index');
     Route::post('/pos/complete', [POSController::class, 'complete'])->name('pos.complete');
 
-    // Quotations
-    Route::resource('quotations', QuotationController::class);
-Route::post('/quotations/{quotation}/update-status', [QuotationController::class, 'updateStatus'])->name('quotations.update-status');
-Route::post('/quotations/{quotation}/convert-to-sale', [QuotationController::class, 'convertToSale'])->name('quotations.convert-to-sale');
-Route::post('/quotations/{quotation}/send-email', [QuotationController::class, 'sendEmail'])->name('quotations.send-email');
-Route::get('/quotations/{quotation}/pdf', [QuotationController::class, 'downloadPDF'])->name('quotations.pdf');
-Route::get('/quotations/reports/overview', [QuotationReportController::class, 'overview'])->name('quotations.reports.overview');
+    // Quotations - Specific routes must come before resource routes
     Route::get('/quotations/reports', [QuotationReportController::class, 'overview'])->name('quotations.reports');
+    Route::get('/quotations/reports/overview', [QuotationReportController::class, 'overview'])->name('quotations.reports.overview');
+    Route::get('/quotations/{quotation}/pdf', [QuotationController::class, 'downloadPDF'])->name('quotations.pdf');
+    Route::post('/quotations/{quotation}/update-status', [QuotationController::class, 'updateStatus'])->name('quotations.update-status');
+    Route::post('/quotations/{quotation}/convert-to-sale', [QuotationController::class, 'convertToSale'])->name('quotations.convert-to-sale');
+    Route::post('/quotations/{quotation}/send-email', [QuotationController::class, 'sendEmail'])->name('quotations.send-email');
+    Route::resource('quotations', QuotationController::class);
 
     // Purchases
     Route::resource('purchases', PurchaseController::class);
@@ -123,8 +123,9 @@ Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.
 Route::get('/reports/purchases', [ReportController::class, 'purchases'])->name('reports.purchases');
 Route::get('/reports/inventory', [ReportController::class, 'inventory'])->name('reports.inventory');
 Route::get('/reports/financial', [ReportController::class, 'sales'])->name('reports.financial');
-Route::get('/reports/customers', [ReportController::class, 'index'])->name('reports.customers');
+Route::get('/reports/customers', [ReportController::class, 'customers'])->name('reports.customers');
 Route::get('/reports/customers/{customer}/statement', [ReportController::class, 'customerStatement'])->name('reports.customer-statement');
+Route::get('/reports/suppliers', [ReportController::class, 'suppliers'])->name('reports.suppliers');
 Route::get('/reports/suppliers/{supplier}/statement', [ReportController::class, 'supplierStatement'])->name('reports.supplier-statement');
     Route::get('/reports/profit-loss', [FinancialStatementController::class, 'profitLoss'])->name('reports.profit-loss');
 

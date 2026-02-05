@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Create Quotation')
+@section('title', 'Create Purchase Order')
 
 @section('content')
 <div class="space-y-4 sm:space-y-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Create Quotation</h1>
-            <p class="text-sm sm:text-base text-gray-600 mt-1">Generate a professional quotation for your customer</p>
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Create Purchase Order</h1>
+            <p class="text-sm sm:text-base text-gray-600 mt-1">Create a new purchase order from your supplier</p>
         </div>
         <div class="flex gap-2 flex-wrap">
-            <a href="{{ route('quotations.index') }}" class="px-3 sm:px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center space-x-2 text-sm">
+            <a href="{{ route('purchases.index') }}" class="px-3 sm:px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center space-x-2 text-sm">
                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
@@ -21,36 +21,47 @@
         </div>
     </div>
 
-    <form action="{{ route('quotations.store') }}" method="POST" id="quotationForm">
+    @if(session('error'))
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="flex items-center space-x-2">
+            <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="text-sm text-red-800">{{ session('error') }}</p>
+        </div>
+    </div>
+    @endif
+
+    <form action="{{ route('purchases.store') }}" method="POST" id="purchaseForm">
         @csrf
         
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             <!-- Main Form -->
             <div class="lg:col-span-2 space-y-4 sm:space-y-6">
-                <!-- Customer & Date Info -->
+                <!-- Supplier & Date Info -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                     <h2 class="text-base sm:text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
-                        <span>Customer Information</span>
+                        <span>Supplier Information</span>
                     </h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Customer <span class="text-gray-400">(Optional)</span></label>
-                            <select name="customer_id" id="customer_id" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                                <option value="">Select Customer</option>
-                                @foreach($customers ?? [] as $customer)
-                                <option value="{{ $customer->id }}" data-email="{{ $customer->email ?? '' }}" data-phone="{{ $customer->phone ?? '' }}" data-address="{{ $customer->address ?? '' }}">
-                                    {{ $customer->name }} - {{ $customer->email ?? $customer->phone ?? 'No contact' }}
+                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Supplier <span class="text-red-500">*</span></label>
+                            <select name="supplier_id" id="supplier_id" required class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Select Supplier</option>
+                                @foreach($suppliers ?? [] as $supplier)
+                                <option value="{{ $supplier->id }}" data-email="{{ $supplier->email ?? '' }}" data-phone="{{ $supplier->phone ?? '' }}" data-address="{{ $supplier->address ?? '' }}" data-balance="{{ $supplier->balance ?? 0 }}">
+                                    {{ $supplier->name }} - {{ $supplier->email ?? $supplier->phone ?? 'No contact' }}
                                 </option>
                                 @endforeach
                             </select>
-                            <div id="customerInfo" class="mt-2 text-xs text-gray-500 hidden"></div>
+                            <div id="supplierInfo" class="mt-2 text-xs text-gray-500 hidden"></div>
                         </div>
                         <div>
                             <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Warehouse <span class="text-gray-400">(Optional)</span></label>
-                            <select name="warehouse_id" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <select name="warehouse_id" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 <option value="">Select Warehouse</option>
                                 @foreach($warehouses ?? [] as $warehouse)
                                 <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
@@ -58,13 +69,22 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Quotation Date <span class="text-red-500">*</span></label>
-                            <input type="date" name="quotation_date" value="{{ date('Y-m-d') }}" required class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Purchase Date <span class="text-red-500">*</span></label>
+                            <input type="date" name="purchase_date" value="{{ date('Y-m-d') }}" required class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                         <div>
-                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Expiry Date <span class="text-gray-400">(Optional)</span></label>
-                            <input type="date" name="expiry_date" id="expiry_date" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <p class="mt-1 text-xs text-gray-500">Leave empty for no expiry</p>
+                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Expected Delivery Date <span class="text-gray-400">(Optional)</span></label>
+                            <input type="date" name="expected_delivery_date" id="expected_delivery_date" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <p class="mt-1 text-xs text-gray-500">When do you expect to receive this order?</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Status</label>
+                            <select name="status" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="pending" selected>Pending</option>
+                                <option value="ordered">Ordered</option>
+                                <option value="partial">Partial</option>
+                                <option value="completed">Completed</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -73,14 +93,14 @@
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">
                         <h2 class="text-base sm:text-lg font-semibold text-gray-900 flex items-center space-x-2">
-                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                             </svg>
-                            <span>Products & Services</span>
+                            <span>Products to Purchase</span>
                         </h2>
                         <div class="flex gap-2">
-                            <input type="text" id="productSearch" placeholder="Search products..." class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <button type="button" onclick="addProductRow()" class="px-3 sm:px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-xs sm:text-sm flex items-center space-x-2">
+                            <input type="text" id="productSearch" placeholder="Search products..." class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button type="button" onclick="addProductRow()" class="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs sm:text-sm flex items-center space-x-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                 </svg>
@@ -95,26 +115,34 @@
                         <svg class="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                         </svg>
-                        <p>Click "Add Product" to start adding items to this quotation</p>
+                        <p>Click "Add Product" to start adding items to this purchase order</p>
                     </div>
                 </div>
 
-                <!-- Terms & Notes -->
+                <!-- Payment & Notes -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                     <h2 class="text-base sm:text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
-                        <span>Additional Information</span>
+                        <span>Payment & Notes</span>
                     </h2>
-                    <div class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
-                            <textarea name="terms_conditions" rows="4" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Enter terms and conditions that will appear on the quotation..."></textarea>
+                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Paid Amount (TZS)</label>
+                            <input type="number" name="paid_amount" id="paid_amount" value="0" step="0.01" min="0" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="calculateDueAmount()" placeholder="0.00">
+                            <p class="mt-1 text-xs text-gray-500">Amount paid upfront (if any)</p>
                         </div>
                         <div>
-                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Internal Notes</label>
-                            <textarea name="notes" rows="3" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Internal notes (not visible to customer)..."></textarea>
+                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Due Amount (TZS)</label>
+                            <div id="due_amount_display" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base bg-gray-50 border border-gray-300 rounded-lg font-semibold text-gray-900">
+                                TZS 0
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Calculated automatically</p>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Notes</label>
+                            <textarea name="notes" rows="3" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Additional notes about this purchase order..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -140,13 +168,23 @@
                         <div class="border-t border-gray-200 pt-3 mt-3">
                             <div class="flex justify-between text-base sm:text-lg font-bold">
                                 <span>Total:</span>
-                                <span class="text-purple-600" id="total">TZS 0</span>
+                                <span class="text-blue-600" id="total">TZS 0</span>
+                            </div>
+                        </div>
+                        <div class="border-t border-gray-200 pt-3 mt-3 space-y-2">
+                            <div class="flex justify-between text-xs sm:text-sm">
+                                <span class="text-gray-600">Paid:</span>
+                                <span class="font-semibold text-green-600" id="paidDisplay">TZS 0</span>
+                            </div>
+                            <div class="flex justify-between text-xs sm:text-sm">
+                                <span class="text-gray-600">Due:</span>
+                                <span class="font-semibold text-red-600" id="dueDisplay">TZS 0</span>
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 space-y-2">
-                        <button type="submit" class="w-full px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-semibold text-sm sm:text-base transition-colors">
-                            Create Quotation
+                        <button type="submit" class="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold text-sm sm:text-base transition-colors">
+                            Create Purchase Order
                         </button>
                         <p class="text-xs text-center text-gray-500">Items: <span id="itemCount">0</span></p>
                     </div>
@@ -168,15 +206,19 @@
         return 'TZS ' + parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
     }
 
-    // Customer info display
-    document.getElementById('customer_id')?.addEventListener('change', function() {
+    // Supplier info display
+    document.getElementById('supplier_id')?.addEventListener('change', function() {
         const option = this.options[this.selectedIndex];
-        const infoDiv = document.getElementById('customerInfo');
+        const infoDiv = document.getElementById('supplierInfo');
         if (option.value && option.dataset.email) {
             let info = '';
             if (option.dataset.email) info += `Email: ${option.dataset.email}<br>`;
             if (option.dataset.phone) info += `Phone: ${option.dataset.phone}<br>`;
-            if (option.dataset.address) info += `Address: ${option.dataset.address}`;
+            if (option.dataset.address) info += `Address: ${option.dataset.address}<br>`;
+            const balance = parseFloat(option.dataset.balance || 0);
+            if (balance > 0) {
+                info += `Outstanding Balance: ${formatTZS(balance)}`;
+            }
             infoDiv.innerHTML = info;
             infoDiv.classList.remove('hidden');
         } else {
@@ -188,7 +230,6 @@
     document.getElementById('productSearch')?.addEventListener('input', function(e) {
         const searchTerm = e.target.value.toLowerCase();
         if (searchTerm.length > 0) {
-            // Filter products and show suggestions (could be enhanced with a dropdown)
             console.log('Searching for:', searchTerm);
         }
     });
@@ -208,16 +249,16 @@
         row.innerHTML = `
             <div class="sm:col-span-5">
                 <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Product <span class="text-red-500">*</span></label>
-                <select name="items[${productRowIndex}][product_id]" class="product-select w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required onchange="updateProductInfo(${productRowIndex}, this.value)">
+                <select name="items[${productRowIndex}][product_id]" class="product-select w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required onchange="updateProductInfo(${productRowIndex}, this.value)">
                     <option value="">Select Product</option>
                     ${products.map(p => {
                         const stockStatus = p.stock_quantity > 0 ? (p.stock_quantity <= p.low_stock_alert ? '⚠️ Low Stock' : '✅ In Stock') : '❌ Out of Stock';
                         return `<option value="${p.id}" 
-                            data-price="${p.selling_price}" 
+                            data-price="${p.cost_price || p.selling_price}" 
                             data-stock="${p.stock_quantity}"
                             data-sku="${p.sku || 'N/A'}"
                             ${product && product.product_id == p.id ? 'selected' : ''}>
-                            ${p.name} - ${formatTZS(p.selling_price)} (${stockStatus})
+                            ${p.name} - ${formatTZS(p.cost_price || p.selling_price)} (${stockStatus})
                         </option>`;
                     }).join('')}
                 </select>
@@ -225,15 +266,15 @@
             </div>
             <div class="sm:col-span-2">
                 <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Quantity <span class="text-red-500">*</span></label>
-                <input type="number" name="items[${productRowIndex}][quantity]" value="${product ? product.quantity : 1}" min="1" required class="quantity-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="calculateRowTotal(${productRowIndex})" oninput="checkStock(${productRowIndex})">
+                <input type="number" name="items[${productRowIndex}][quantity]" value="${product ? product.quantity : 1}" min="1" required class="quantity-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="calculateRowTotal(${productRowIndex})">
             </div>
             <div class="sm:col-span-2">
                 <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Unit Price <span class="text-red-500">*</span></label>
-                <input type="number" name="items[${productRowIndex}][unit_price]" value="${product ? product.unit_price : 0}" step="0.01" min="0" required class="price-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="calculateRowTotal(${productRowIndex})" placeholder="0.00">
+                <input type="number" name="items[${productRowIndex}][unit_price]" value="${product ? product.unit_price : 0}" step="0.01" min="0" required class="price-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="calculateRowTotal(${productRowIndex})" placeholder="0.00">
             </div>
             <div class="sm:col-span-2">
                 <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Discount</label>
-                <input type="number" name="items[${productRowIndex}][discount]" value="${product ? product.discount : 0}" step="0.01" min="0" class="discount-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="calculateRowTotal(${productRowIndex})" placeholder="0.00">
+                <input type="number" name="items[${productRowIndex}][discount]" value="${product ? product.discount : 0}" step="0.01" min="0" class="discount-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="calculateRowTotal(${productRowIndex})" placeholder="0.00">
             </div>
             <div class="sm:col-span-1 flex flex-col sm:flex-row gap-2">
                 <div class="flex-1">
@@ -260,6 +301,7 @@
             row.remove();
             updateItemCount();
             calculateTotals();
+            calculateDueAmount();
             
             // Show empty message if no products
             const container = document.getElementById('productsContainer');
@@ -289,48 +331,19 @@
             if (infoDiv) {
                 let info = `SKU: ${sku}`;
                 if (stock > 0) {
-                    info += ` | Stock: ${stock}`;
+                    info += ` | Current Stock: ${stock}`;
                     if (stock <= 10) {
                         info += ' <span class="text-yellow-600">⚠️ Low Stock</span>';
                     }
                 } else {
-                    info += ' <span class="text-red-600">❌ Out of Stock</span>';
+                    info += ' <span class="text-gray-500">No Stock</span>';
                 }
                 infoDiv.innerHTML = info;
             }
             
             calculateRowTotal(rowIndex);
-            checkStock(rowIndex);
         } else if (infoDiv) {
             infoDiv.innerHTML = '';
-        }
-    }
-
-    function checkStock(rowIndex) {
-        const row = document.getElementById(`product-row-${rowIndex}`);
-        if (!row) return;
-        
-        const productSelect = row.querySelector('.product-select');
-        const quantityInput = row.querySelector('.quantity-input');
-        
-        if (productSelect && quantityInput && productSelect.value) {
-            const option = productSelect.options[productSelect.selectedIndex];
-            const stock = parseInt(option.dataset.stock || 0);
-            const quantity = parseInt(quantityInput.value || 0);
-            
-            if (quantity > stock) {
-                quantityInput.classList.add('border-red-500', 'bg-red-50');
-                quantityInput.setAttribute('max', stock);
-                if (stock > 0) {
-                    quantityInput.setCustomValidity(`Only ${stock} units available in stock`);
-                } else {
-                    quantityInput.setCustomValidity('Product is out of stock');
-                }
-            } else {
-                quantityInput.classList.remove('border-red-500', 'bg-red-50');
-                quantityInput.removeAttribute('max');
-                quantityInput.setCustomValidity('');
-            }
         }
     }
 
@@ -349,6 +362,7 @@
         }
         
         calculateTotals();
+        calculateDueAmount();
     }
 
     function calculateTotals() {
@@ -377,6 +391,25 @@
         if (totalEl) totalEl.textContent = formatTZS(total);
     }
 
+    function calculateDueAmount() {
+        const totalEl = document.getElementById('total');
+        const paidInput = document.getElementById('paid_amount');
+        const dueDisplay = document.getElementById('due_amount_display');
+        const paidDisplay = document.getElementById('paidDisplay');
+        const dueDisplaySummary = document.getElementById('dueDisplay');
+        
+        if (totalEl && paidInput && dueDisplay) {
+            const totalText = totalEl.textContent.replace('TZS ', '').replace(/,/g, '');
+            const total = parseFloat(totalText) || 0;
+            const paid = parseFloat(paidInput.value) || 0;
+            const due = Math.max(0, total - paid);
+            
+            dueDisplay.textContent = formatTZS(due);
+            if (paidDisplay) paidDisplay.textContent = formatTZS(paid);
+            if (dueDisplaySummary) dueDisplaySummary.textContent = formatTZS(due);
+        }
+    }
+
     function updateItemCount() {
         const count = document.querySelectorAll('[id^="product-row-"]').length;
         const countEl = document.getElementById('itemCount');
@@ -386,11 +419,11 @@
     }
 
     // Form validation
-    document.getElementById('quotationForm')?.addEventListener('submit', function(e) {
+    document.getElementById('purchaseForm')?.addEventListener('submit', function(e) {
         const productRows = document.querySelectorAll('[id^="product-row-"]');
         if (productRows.length === 0) {
             e.preventDefault();
-            alert('Please add at least one product to the quotation.');
+            alert('Please add at least one product to the purchase order.');
             return false;
         }
         
@@ -413,9 +446,14 @@
         }
     });
 
+    // Paid amount change handler
+    document.getElementById('paid_amount')?.addEventListener('input', calculateDueAmount);
+    document.getElementById('paid_amount')?.addEventListener('change', calculateDueAmount);
+
     // Add first product row on load
     document.addEventListener('DOMContentLoaded', function() {
         addProductRow();
     });
 </script>
 @endsection
+

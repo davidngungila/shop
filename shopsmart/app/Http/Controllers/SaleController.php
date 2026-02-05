@@ -90,7 +90,7 @@ class SaleController extends Controller
     public function invoices(Request $request)
     {
         $query = Sale::where('status', 'completed')
-            ->with(['customer', 'user', 'items.product']);
+            ->with(['customer', 'user', 'items', 'items.product']);
 
         // Date range filter with defaults
         $dateFrom = $request->filled('date_from') ? $request->date_from : now()->startOfMonth()->toDateString();

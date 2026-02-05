@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class PurchaseController extends Controller
 {
@@ -260,7 +262,11 @@ class PurchaseController extends Controller
      */
     public function create()
     {
-        //
+        $suppliers = \App\Models\Supplier::where('is_active', true)->orderBy('name')->get();
+        $products = \App\Models\Product::where('is_active', true)->with('category')->orderBy('name')->get();
+        $warehouses = \App\Models\Warehouse::where('is_active', true)->orderBy('name')->get();
+        
+        return view('purchases.create', compact('suppliers', 'products', 'warehouses'));
     }
 
     /**
@@ -268,15 +274,99 @@ class PurchaseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'supplier_id' => 'required|exists:suppliers,id',
+            'warehouse_id' => 'nullable|exists:warehouses,id',
+            'purchase_date' => 'required|date',
+            'expected_delivery_date' => 'nullable|date|after_or_equal:purchase_date',
+            'status' => 'nullable|in:pending,ordered,partial,completed,cancelled',
+            'notes' => 'nullable|string',
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.unit_price' => 'required|numeric|min:0',
+            'items.*.discount' => 'nullable|numeric|min:0',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $subtotal = 0;
+            $totalDiscount = 0;
+
+            foreach ($validated['items'] as $item) {
+                $itemTotal = ($item['unit_price'] * $item['quantity']) - ($item['discount'] ?? 0);
+                $subtotal += $itemTotal;
+                $totalDiscount += ($item['discount'] ?? 0);
+            }
+
+            $tax = $subtotal * 0.10; // 10% tax
+            $total = $subtotal + $tax;
+            $paidAmount = $request->input('paid_amount', 0);
+            $dueAmount = $total - $paidAmount;
+
+            $purchase = \App\Models\Purchase::create([
+                'purchase_number' => 'PO-' . strtoupper(Str::random(8)),
+                'supplier_id' => $validated['supplier_id'],
+                'user_id' => auth()->id(),
+                'warehouse_id' => $validated['warehouse_id'] ?? null,
+                'subtotal' => $subtotal,
+                'discount' => $totalDiscount,
+                'tax' => $tax,
+                'total' => $total,
+                'paid_amount' => $paidAmount,
+                'due_amount' => $dueAmount,
+                'status' => $validated['status'] ?? 'pending',
+                'purchase_date' => $validated['purchase_date'],
+                'expected_delivery_date' => $validated['expected_delivery_date'] ?? null,
+                'notes' => $validated['notes'] ?? null,
+            ]);
+
+            foreach ($validated['items'] as $item) {
+                $itemDiscount = $item['discount'] ?? 0;
+                $itemSubtotal = $item['unit_price'] * $item['quantity'];
+                $itemTotal = $itemSubtotal - $itemDiscount;
+                
+                \App\Models\PurchaseItem::create([
+                    'purchase_id' => $purchase->id,
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['unit_price'],
+                    'total' => $itemTotal,
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('purchases.show', $purchase)->with('success', 'Purchase order created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()->with('error', 'Failed to create purchase order: ' . $e->getMessage());
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $purchase = \App\Models\Purchase::with(['supplier', 'user', 'warehouse', 'items.product'])->findOrFail($id);
+    {
+        $purchase->load(['supplier', 'user', 'warehouse', 'items.product']);
+        
+        // Calculate payment progress
+        $paymentProgress = $purchase->total > 0 ? ($purchase->paid_amount / $purchase->total) * 100 : 0;
+        
+        // Check if overdue
+        $isOverdue = $purchase->expected_delivery_date && 
+                     $purchase->expected_delivery_date < now() && 
+                     in_array($purchase->status, ['pending', 'ordered', 'partial']);
+        
+        // Days until/since delivery
+        $deliveryDays = null;
+        if ($purchase->expected_delivery_date) {
+            $deliveryDays = now()->diffInDays($purchase->expected_delivery_date, false);
+        }
+        
+        return view('purchases.show', compact('purchase', 'paymentProgress', 'isOverdue', 'deliveryDays'));
     }
 
     /**
@@ -290,9 +380,39 @@ class PurchaseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $purchase = \App\Models\Purchase::findOrFail($id);
+        
+        $validated = $request->validate([
+            'status' => 'sometimes|in:pending,ordered,partial,completed,received,paid,cancelled',
+            'paid_amount' => 'sometimes|numeric|min:0|max:' . $purchase->total,
+            'notes' => 'sometimes|nullable|string',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            if (isset($validated['status'])) {
+                $purchase->status = $validated['status'];
+            }
+            
+            if (isset($validated['paid_amount'])) {
+                $purchase->paid_amount = $validated['paid_amount'];
+                $purchase->due_amount = $purchase->total - $purchase->paid_amount;
+            }
+            
+            if (isset($validated['notes'])) {
+                $purchase->notes = $validated['notes'];
+            }
+            
+            $purchase->save();
+            
+            DB::commit();
+            return redirect()->route('purchases.show', $purchase)->with('success', 'Purchase order updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to update purchase order: ' . $e->getMessage());
+        }
     }
 
     /**
