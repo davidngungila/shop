@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sale;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SaleController extends Controller
 {
@@ -339,7 +340,34 @@ class SaleController extends Controller
     public function pdf(Sale $sale)
     {
         $sale->load(['customer', 'user', 'items.product', 'warehouse']);
-        return view('sales.receipt-pdf', compact('sale'));
+        
+        // Get company settings
+        $companyName = \App\Models\Setting::get('company_name', 'ShopSmart');
+        $companyAddress = \App\Models\Setting::get('company_address', 'Dar es Salaam, Tanzania');
+        $companyPhone = \App\Models\Setting::get('company_phone', '+255 XXX XXX XXX');
+        $companyEmail = \App\Models\Setting::get('company_email', '');
+        $companyLogo = \App\Models\Setting::get('company_logo', '');
+        
+        // Generate PDF using facade or service container
+        try {
+            $pdf = Pdf::loadView('sales.receipt-pdf', compact('sale', 'companyName', 'companyAddress', 'companyPhone', 'companyEmail', 'companyLogo'));
+        } catch (\Exception $e) {
+            // Fallback: use service container directly
+            $pdf = app('dompdf.wrapper');
+            $pdf->loadView('sales.receipt-pdf', compact('sale', 'companyName', 'companyAddress', 'companyPhone', 'companyEmail', 'companyLogo'));
+        }
+        
+        // Set PDF options
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('enable-local-file-access', true);
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
+        
+        // Download PDF with filename
+        $invoiceNumber = $sale->invoice_number ?? str_pad($sale->id, 6, '0', STR_PAD_LEFT);
+        $filename = 'Receipt-' . $invoiceNumber . '-' . now()->format('Y-m-d') . '.pdf';
+        
+        return $pdf->download($filename);
     }
 
     /**

@@ -30,7 +30,7 @@
                 <!-- Customer & Date Info -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                     <h2 class="text-base sm:text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-[#009245]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
                         <span>Customer Information</span>
@@ -38,7 +38,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Customer <span class="text-gray-400">(Optional)</span></label>
-                            <select name="customer_id" id="customer_id" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <select name="customer_id" id="customer_id" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]">
                                 <option value="">Select Customer</option>
                                 @foreach($customers ?? [] as $customer)
                                 <option value="{{ $customer->id }}" data-email="{{ $customer->email ?? '' }}" data-phone="{{ $customer->phone ?? '' }}" data-address="{{ $customer->address ?? '' }}">
@@ -50,7 +50,7 @@
                         </div>
                         <div>
                             <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Warehouse <span class="text-gray-400">(Optional)</span></label>
-                            <select name="warehouse_id" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <select name="warehouse_id" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]">
                                 <option value="">Select Warehouse</option>
                                 @foreach($warehouses ?? [] as $warehouse)
                                 <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
@@ -59,11 +59,11 @@
                         </div>
                         <div>
                             <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Quotation Date <span class="text-red-500">*</span></label>
-                            <input type="date" name="quotation_date" value="{{ date('Y-m-d') }}" required class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <input type="date" name="quotation_date" value="{{ date('Y-m-d') }}" required class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]">
                         </div>
                         <div>
                             <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Expiry Date <span class="text-gray-400">(Optional)</span></label>
-                            <input type="date" name="expiry_date" id="expiry_date" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <input type="date" name="expiry_date" id="expiry_date" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]">
                             <p class="mt-1 text-xs text-gray-500">Leave empty for no expiry</p>
                         </div>
                     </div>
@@ -73,14 +73,14 @@
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">
                         <h2 class="text-base sm:text-lg font-semibold text-gray-900 flex items-center space-x-2">
-                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-[#009245]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                             </svg>
                             <span>Products & Services</span>
                         </h2>
                         <div class="flex gap-2">
-                            <input type="text" id="productSearch" placeholder="Search products..." class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            <button type="button" onclick="addProductRow()" class="px-3 sm:px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-xs sm:text-sm flex items-center space-x-2">
+                            <input type="text" id="productSearch" placeholder="Search products..." class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]">
+                            <button type="button" onclick="addProductRow()" class="px-3 sm:px-4 py-2 bg-[#009245] text-white rounded-lg hover:bg-[#007a38] text-xs sm:text-sm flex items-center space-x-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                 </svg>
@@ -102,7 +102,7 @@
                 <!-- Terms & Notes -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                     <h2 class="text-base sm:text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-[#009245]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
                         <span>Additional Information</span>
@@ -110,11 +110,11 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Terms & Conditions</label>
-                            <textarea name="terms_conditions" rows="4" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Enter terms and conditions that will appear on the quotation..."></textarea>
+                            <textarea name="terms_conditions" rows="4" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]" placeholder="Enter terms and conditions that will appear on the quotation..."></textarea>
                         </div>
                         <div>
                             <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Internal Notes</label>
-                            <textarea name="notes" rows="3" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Internal notes (not visible to customer)..."></textarea>
+                            <textarea name="notes" rows="3" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]" placeholder="Internal notes (not visible to customer)..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -140,12 +140,12 @@
                         <div class="border-t border-gray-200 pt-3 mt-3">
                             <div class="flex justify-between text-base sm:text-lg font-bold">
                                 <span>Total:</span>
-                                <span class="text-purple-600" id="total">TZS 0</span>
+                                <span class="text-[#009245]" id="total">TZS 0</span>
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 space-y-2">
-                        <button type="submit" class="w-full px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-semibold text-sm sm:text-base transition-colors">
+                        <button type="submit" class="w-full px-4 py-3 bg-[#009245] text-white rounded-lg hover:bg-[#007a38] font-semibold text-sm sm:text-base transition-colors">
                             Create Quotation
                         </button>
                         <p class="text-xs text-center text-gray-500">Items: <span id="itemCount">0</span></p>
@@ -208,7 +208,7 @@
         row.innerHTML = `
             <div class="sm:col-span-5">
                 <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Product <span class="text-red-500">*</span></label>
-                <select name="items[${productRowIndex}][product_id]" class="product-select w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required onchange="updateProductInfo(${productRowIndex}, this.value)">
+                <select name="items[${productRowIndex}][product_id]" class="product-select w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]" required onchange="updateProductInfo(${productRowIndex}, this.value)">
                     <option value="">Select Product</option>
                     ${products.map(p => {
                         const stockStatus = p.stock_quantity > 0 ? (p.stock_quantity <= p.low_stock_alert ? '⚠️ Low Stock' : '✅ In Stock') : '❌ Out of Stock';
@@ -225,15 +225,15 @@
             </div>
             <div class="sm:col-span-2">
                 <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Quantity <span class="text-red-500">*</span></label>
-                <input type="number" name="items[${productRowIndex}][quantity]" value="${product ? product.quantity : 1}" min="1" required class="quantity-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="calculateRowTotal(${productRowIndex})" oninput="checkStock(${productRowIndex})">
+                <input type="number" name="items[${productRowIndex}][quantity]" value="${product ? product.quantity : 1}" min="1" required class="quantity-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]" onchange="calculateRowTotal(${productRowIndex})" oninput="checkStock(${productRowIndex})">
             </div>
             <div class="sm:col-span-2">
                 <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Unit Price <span class="text-red-500">*</span></label>
-                <input type="number" name="items[${productRowIndex}][unit_price]" value="${product ? product.unit_price : 0}" step="0.01" min="0" required class="price-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="calculateRowTotal(${productRowIndex})" placeholder="0.00">
+                <input type="number" name="items[${productRowIndex}][unit_price]" value="${product ? product.unit_price : 0}" step="0.01" min="0" required class="price-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]" onchange="calculateRowTotal(${productRowIndex})" placeholder="0.00">
             </div>
             <div class="sm:col-span-2">
                 <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">Discount</label>
-                <input type="number" name="items[${productRowIndex}][discount]" value="${product ? product.discount : 0}" step="0.01" min="0" class="discount-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="calculateRowTotal(${productRowIndex})" placeholder="0.00">
+                <input type="number" name="items[${productRowIndex}][discount]" value="${product ? product.discount : 0}" step="0.01" min="0" class="discount-input w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245]" onchange="calculateRowTotal(${productRowIndex})" placeholder="0.00">
             </div>
             <div class="sm:col-span-1 flex flex-col sm:flex-row gap-2">
                 <div class="flex-1">

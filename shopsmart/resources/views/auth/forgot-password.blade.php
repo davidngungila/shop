@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login - ShopSmart</title>
+    <title>Forgot Password - ShopSmart</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
@@ -20,11 +20,11 @@
             <div class="inline-flex items-center justify-center mb-4">
                 <img src="{{ asset('logo.png') }}" alt="ShopSmart Logo" class="h-20 w-auto">
             </div>
-            <h1 class="text-3xl font-bold text-gray-900">ShopSmart</h1>
-           
+            <h1 class="text-3xl font-bold text-gray-900">Forgot Password</h1>
+            <p class="text-gray-600 mt-2">Enter your email to reset your password</p>
         </div>
 
-        <!-- Login Card -->
+        <!-- Forgot Password Card -->
         <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
             @if(session('success'))
             <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">
@@ -42,7 +42,7 @@
             </div>
             @endif
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+            <form method="POST" action="{{ route('password.forgot') }}" class="space-y-6">
                 @csrf
 
                 <!-- Email -->
@@ -58,47 +58,14 @@
                         required 
                         autofocus
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#009245] focus:border-transparent transition duration-200 @error('email') border-red-500 @enderror"
-                        placeholder="admin@shopsmart.com"
+                        placeholder="Enter your email address"
                     >
                     @error('email')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                </div>
-
-                <!-- Password -->
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                        Password
-                    </label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#009245] focus:border-transparent transition duration-200 @error('password') border-red-500 @enderror"
-                        placeholder="Enter your password"
-                    >
-                    @error('password')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Remember Me -->
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <input 
-                            type="checkbox" 
-                            id="remember" 
-                            name="remember" 
-                            class="w-4 h-4 text-[#009245] border-gray-300 rounded focus:ring-[#009245]"
-                        >
-                        <label for="remember" class="ml-2 text-sm text-gray-600">
-                            Remember me
-                        </label>
-                    </div>
-                    <a href="{{ route('password.forgot') }}" class="text-sm text-[#009245] hover:text-[#007a38] font-medium">
-                        Forgot password?
-                    </a>
+                    <p class="mt-2 text-xs text-gray-500">
+                        We'll send a new password to your email address if it exists in our system.
+                    </p>
                 </div>
 
                 <!-- Submit Button -->
@@ -106,9 +73,16 @@
                     type="submit" 
                     class="w-full bg-[#009245] text-white py-3 px-4 rounded-lg font-semibold hover:bg-[#007a38] focus:outline-none focus:ring-2 focus:ring-[#009245] focus:ring-offset-2 transition duration-200 shadow-md hover:shadow-lg"
                 >
-                    Sign In
+                    Send New Password
                 </button>
             </form>
+
+            <!-- Back to Login -->
+            <div class="mt-6 text-center">
+                <a href="{{ route('login') }}" class="text-sm text-[#009245] hover:text-[#007a38] font-medium">
+                    ← Back to Login
+                </a>
+            </div>
         </div>
 
         <!-- Footer -->
@@ -118,3 +92,4 @@
     </div>
 </body>
 </html>
+

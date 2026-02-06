@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receipt #{{ $sale->invoice_number ?? $sale->id }}</title>
+    @php
+        $companyName = \App\Models\Setting::get('company_name', 'ShopSmart');
+        $companyAddress = \App\Models\Setting::get('company_address', 'Dar es Salaam, Tanzania');
+        $companyPhone = \App\Models\Setting::get('company_phone', '+255 XXX XXX XXX');
+        $companyEmail = \App\Models\Setting::get('company_email', '');
+        $companyLogo = \App\Models\Setting::get('company_logo', '');
+    @endphp
     <style>
         * {
             margin: 0;
@@ -147,7 +154,7 @@
             }
             .no-print button {
                 padding: 10px 20px;
-                background: #9333ea;
+                background: #009245;
                 color: white;
                 border: none;
                 border-radius: 5px;
@@ -156,7 +163,13 @@
                 margin: 5px;
             }
             .no-print button:hover {
-                background: #7e22ce;
+                background: #007a38;
+            }
+            .logo {
+                max-width: 60px;
+                max-height: 60px;
+                margin: 0 auto 5px;
+                display: block;
             }
         }
     </style>
@@ -168,10 +181,22 @@
     </div>
 
     <div class="receipt-header">
-        <div class="company-name">SHOPSMART</div>
+        @if($companyLogo && file_exists(public_path('storage/' . $companyLogo)))
+            <img src="{{ asset('storage/' . $companyLogo) }}" alt="{{ $companyName }}" class="logo">
+        @elseif(file_exists(public_path('logo.png')))
+            <img src="{{ asset('logo.png') }}" alt="{{ $companyName }}" class="logo">
+        @endif
+        <div class="company-name">{{ strtoupper($companyName) }}</div>
         <div class="company-info">Point of Sale System</div>
-        <div class="company-info">Dar es Salaam, Tanzania</div>
-        <div class="company-info">Tel: +255 XXX XXX XXX</div>
+        @if($companyAddress)
+        <div class="company-info">{{ $companyAddress }}</div>
+        @endif
+        @if($companyPhone)
+        <div class="company-info">Tel: {{ $companyPhone }}</div>
+        @endif
+        @if($companyEmail)
+        <div class="company-info">Email: {{ $companyEmail }}</div>
+        @endif
     </div>
 
     <div class="receipt-title">SALES RECEIPT</div>

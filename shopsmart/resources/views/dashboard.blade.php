@@ -13,7 +13,7 @@
             </p>
         </div>
         <div class="flex gap-2">
-            <a href="{{ route('pos.index') }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center space-x-2">
+            <a href="{{ route('pos.index') }}" class="px-4 py-2 rounded-lg flex items-center space-x-2" style="background-color: #009245; color: white;" onmouseover="this.style.backgroundColor='#007a38'" onmouseout="this.style.backgroundColor='#009245'">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>

@@ -12,6 +12,7 @@ use App\Models\SaleItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class QuotationController extends Controller
 {
@@ -24,7 +25,11 @@ class QuotationController extends Controller
             ->where('status', '!=', 'expired')
             ->update(['status' => 'expired']);
 
-        $query = Quotation::with(['customer', 'user']);
+        $query = Quotation::with(['customer', 'user', 'items']);
+
+        // Date range filter with defaults
+        $dateFrom = $request->filled('date_from') ? $request->date_from : now()->startOfMonth()->toDateString();
+        $dateTo = $request->filled('date_to') ? $request->date_to : now()->endOfMonth()->toDateString();
 
         // Filters
         if ($request->filled('status')) {
@@ -43,15 +48,71 @@ class QuotationController extends Controller
             $query->where(function($q) use ($request) {
                 $q->where('quotation_number', 'like', '%' . $request->search . '%')
                   ->orWhereHas('customer', function($q) use ($request) {
-                      $q->where('name', 'like', '%' . $request->search . '%');
+                      $q->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('email', 'like', '%' . $request->search . '%')
+                        ->orWhere('phone', 'like', '%' . $request->search . '%');
                   });
             });
         }
 
+        // Statistics (All time)
+        $totalQuotations = Quotation::count();
+        $totalAmount = Quotation::sum('total');
+        
+        // Today's statistics
+        $todayQuotations = Quotation::whereDate('quotation_date', today())->count();
+        $todayAmount = Quotation::whereDate('quotation_date', today())->sum('total');
+        
+        // This month statistics
+        $thisMonthQuotations = Quotation::whereMonth('quotation_date', now()->month)
+            ->whereYear('quotation_date', now()->year)
+            ->count();
+        $thisMonthAmount = Quotation::whereMonth('quotation_date', now()->month)
+            ->whereYear('quotation_date', now()->year)
+            ->sum('total');
+        
+        // Status breakdown
+        $statusBreakdown = Quotation::selectRaw('status, COUNT(*) as count, SUM(total) as total')
+            ->groupBy('status')
+            ->get();
+
+        // Filtered statistics
+        $filteredQuery = Quotation::query();
+        if ($request->filled('status')) {
+            $filteredQuery->where('status', $request->status);
+        }
+        if ($request->filled('customer_id')) {
+            $filteredQuery->where('customer_id', $request->customer_id);
+        }
+        if ($request->filled('date_from')) {
+            $filteredQuery->whereDate('quotation_date', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $filteredQuery->whereDate('quotation_date', '<=', $request->date_to);
+        }
+        $filteredCount = $filteredQuery->count();
+        $filteredAmount = $filteredQuery->sum('total');
+
+        // Top customers by quotation value
+        $topCustomers = Quotation::whereNotNull('customer_id')
+            ->selectRaw('customer_id, COUNT(*) as quotation_count, SUM(total) as total_value')
+            ->groupBy('customer_id')
+            ->orderBy('total_value', 'desc')
+            ->limit(5)
+            ->get()
+            ->load('customer');
+
         $quotations = $query->latest()->paginate(20);
         $customers = Customer::where('is_active', true)->get();
         
-        return view('quotations.index', compact('quotations', 'customers'));
+        return view('quotations.index', compact(
+            'quotations', 'customers', 
+            'totalQuotations', 'totalAmount',
+            'todayQuotations', 'todayAmount',
+            'thisMonthQuotations', 'thisMonthAmount',
+            'statusBreakdown', 'filteredCount', 'filteredAmount',
+            'topCustomers', 'dateFrom', 'dateTo'
+        ));
     }
 
     public function create()
@@ -312,10 +373,43 @@ class QuotationController extends Controller
 
     public function downloadPDF(Quotation $quotation)
     {
-        $quotation->load(['customer', 'user', 'warehouse', 'items.product']);
+        $quotation->load(['customer', 'user', 'warehouse', 'items.product', 'items.product.category', 'sale']);
         
-        // TODO: Implement PDF generation using DomPDF or similar
-        // For now, return a view that can be printed
-        return view('quotations.pdf', compact('quotation'));
+        // Get company settings
+        $companyName = \App\Models\Setting::get('company_name', 'ShopSmart');
+        $companyEmail = \App\Models\Setting::get('company_email', '');
+        $companyPhone = \App\Models\Setting::get('company_phone', '');
+        $companyAddress = \App\Models\Setting::get('company_address', '');
+        $companyTaxId = \App\Models\Setting::get('tax_id', '');
+        $companyWebsite = \App\Models\Setting::get('company_website', '');
+        
+        $settings = [
+            'company_name' => $companyName,
+            'company_email' => $companyEmail,
+            'company_phone' => $companyPhone,
+            'company_address' => $companyAddress,
+            'tax_id' => $companyTaxId,
+            'company_website' => $companyWebsite,
+        ];
+        
+        // Generate PDF using facade or service container
+        try {
+            $pdf = Pdf::loadView('quotations.pdf', compact('quotation', 'settings'));
+        } catch (\Exception $e) {
+            // Fallback: use service container directly
+            $pdf = app('dompdf.wrapper');
+            $pdf->loadView('quotations.pdf', compact('quotation', 'settings'));
+        }
+        
+        // Set PDF options
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('enable-local-file-access', true);
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
+        
+        // Download PDF with filename
+        $filename = 'Quotation-' . $quotation->quotation_number . '-' . now()->format('Y-m-d') . '.pdf';
+        
+        return $pdf->download($filename);
     }
 }

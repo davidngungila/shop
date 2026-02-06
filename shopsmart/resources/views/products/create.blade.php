@@ -280,7 +280,7 @@
                             name="track_stock" 
                             value="1"
                             {{ old('track_stock', true) ? 'checked' : '' }}
-                            class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                            class="w-4 h-4 text-[#009245] border-gray-300 rounded focus:ring-[#009245]"
                         >
                         <span class="text-sm font-medium text-gray-700">Track Stock</span>
                     </label>
@@ -290,7 +290,7 @@
                             name="is_active" 
                             value="1"
                             {{ old('is_active', true) ? 'checked' : '' }}
-                            class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                            class="w-4 h-4 text-[#009245] border-gray-300 rounded focus:ring-[#009245]"
                         >
                         <span class="text-sm font-medium text-gray-700">Active</span>
                     </label>
@@ -302,7 +302,7 @@
                 <a href="{{ route('products.index') }}" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700">
                     Cancel
                 </a>
-                <button type="submit" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
+                <button type="submit" class="px-6 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2" style="background-color: #009245; color: white;" onmouseover="this.style.backgroundColor='#007a38'" onmouseout="this.style.backgroundColor='#009245'" onfocus="this.style.outline='2px solid #009245'; this.style.outlineOffset='2px'" onblur="this.style.outline='none'">
                     Create Product
                 </button>
             </div>

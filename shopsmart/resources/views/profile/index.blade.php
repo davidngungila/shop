@@ -9,7 +9,7 @@
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">My Profile</h1>
             <p class="text-gray-600 mt-1">Manage your account settings and preferences</p>
         </div>
-        <a href="{{ route('profile.edit') }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Edit Profile</a>
+        <a href="{{ route('profile.edit') }}" class="px-4 py-2 text-white rounded-lg" style="background-color: #009245;" onmouseover="this.style.backgroundColor='#007a38'" onmouseout="this.style.backgroundColor='#009245'">Edit Profile</a>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -18,13 +18,13 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div class="text-center">
                     @if($user && $user->name)
-                    <div class="w-24 h-24 bg-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4">
+                    <div class="w-24 h-24 rounded-full flex items-center justify-center text-white text-3xl font-bold mx-auto mb-4" style="background-color: #009245;">
                         {{ strtoupper(substr($user->name ?? 'U', 0, 1)) }}
                     </div>
                     <h2 class="text-xl font-bold text-gray-900">{{ $user->name ?? 'User' }}</h2>
                     <p class="text-gray-500 mt-1">{{ $user->email ?? 'No email' }}</p>
                     @if($user->role ?? null)
-                    <span class="inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                    <span class="inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full" style="background-color: #e6f5ed; color: #009245;">
                         {{ ucfirst($user->role) }}
                     </span>
                     @endif

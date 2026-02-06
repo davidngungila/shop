@@ -163,12 +163,12 @@
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Update Status</h2>
                 <form action="{{ route('quotations.update-status', $quotation) }}" method="POST">
                     @csrf
-                    <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mb-3">
+                    <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#009245] mb-3">
                         <option value="pending" {{ $quotation->status === 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="approved" {{ $quotation->status === 'approved' ? 'selected' : '' }}>Approved</option>
                         <option value="rejected" {{ $quotation->status === 'rejected' ? 'selected' : '' }}>Rejected</option>
                     </select>
-                    <button type="submit" class="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">Update Status</button>
+                    <button type="submit" class="w-full px-4 py-2 rounded-lg" style="background-color: #009245; color: white;" onmouseover="this.style.backgroundColor='#007a38'" onmouseout="this.style.backgroundColor='#009245'">Update Status</button>
                 </form>
             </div>
             @endif

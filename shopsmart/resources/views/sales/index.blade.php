@@ -11,7 +11,7 @@
             <p class="text-sm sm:text-base text-gray-600 mt-1">Comprehensive sales management and tracking</p>
         </div>
         <div class="flex gap-2 flex-wrap">
-            <a href="{{ route('pos.index') }}" class="px-3 sm:px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center space-x-2 text-sm">
+            <a href="{{ route('pos.index') }}" class="px-3 sm:px-4 py-2 text-white rounded-lg flex items-center space-x-2 text-sm" style="background-color: #009245;" onmouseover="this.style.backgroundColor='#007a38'" onmouseout="this.style.backgroundColor='#009245'">
                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -38,8 +38,8 @@
                     <p class="text-xl sm:text-2xl font-bold text-gray-900 mt-2">{{ number_format($totalSales ?? 0) }}</p>
                     <p class="text-xs text-gray-500 mt-1">All time</p>
                 </div>
-                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-12 h-12 rounded-lg flex items-center justify-center" style="background-color: #e6f5ed;">
+                    <svg class="w-6 h-6" style="color: #009245;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                     </svg>
                 </div>

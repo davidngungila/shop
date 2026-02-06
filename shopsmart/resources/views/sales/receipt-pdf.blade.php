@@ -23,7 +23,7 @@
         }
         .receipt-header {
             text-align: center;
-            border-bottom: 2px solid #9333ea;
+            border-bottom: 2px solid #009245;
             padding-bottom: 15px;
             margin-bottom: 15px;
         }
@@ -31,8 +31,14 @@
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 8px;
-            color: #9333ea;
+            color: #009245;
             text-transform: uppercase;
+        }
+        .logo {
+            max-width: 60px;
+            max-height: 60px;
+            margin: 0 auto 8px;
+            display: block;
         }
         .company-info {
             font-size: 10px;
@@ -66,7 +72,7 @@
             font-size: 11px;
         }
         .items-table thead {
-            background: #9333ea;
+            background: #009245;
             color: white;
         }
         .items-table th {
@@ -94,7 +100,7 @@
         }
         .summary {
             margin-top: 15px;
-            border-top: 2px solid #9333ea;
+            border-top: 2px solid #009245;
             padding-top: 10px;
         }
         .summary-row {
@@ -104,13 +110,13 @@
             font-size: 12px;
         }
         .summary-row.total {
-            border-top: 2px solid #9333ea;
-            border-bottom: 2px solid #9333ea;
+            border-top: 2px solid #009245;
+            border-bottom: 2px solid #009245;
             padding: 12px 0;
             margin: 12px 0;
             font-size: 16px;
             font-weight: bold;
-            color: #9333ea;
+            color: #009245;
         }
         .payment-info {
             margin-top: 15px;
@@ -154,11 +160,36 @@
 </head>
 <body>
     <div class="receipt-header">
-        <div class="company-name">SHOPSMART</div>
+        @php
+            $logoPath = null;
+            if ($companyLogo && file_exists(public_path('storage/' . $companyLogo))) {
+                $logoPath = public_path('storage/' . $companyLogo);
+            } elseif (file_exists(public_path('logo.png'))) {
+                $logoPath = public_path('logo.png');
+            }
+            
+            // Convert image to base64 for PDF compatibility
+            if ($logoPath && file_exists($logoPath)) {
+                $imageData = file_get_contents($logoPath);
+                $imageInfo = getimagesize($logoPath);
+                $mimeType = $imageInfo['mime'];
+                $base64Image = 'data:' . $mimeType . ';base64,' . base64_encode($imageData);
+            }
+        @endphp
+        @if(isset($base64Image))
+            <img src="{{ $base64Image }}" alt="{{ $companyName }}" class="logo">
+        @endif
+        <div class="company-name">{{ strtoupper($companyName) }}</div>
         <div class="company-info">Point of Sale System</div>
-        <div class="company-info">Dar es Salaam, Tanzania</div>
-        <div class="company-info">Tel: +255 XXX XXX XXX</div>
-        <div class="company-info">Email: info@shopsmart.co.tz</div>
+        @if($companyAddress)
+        <div class="company-info">{{ $companyAddress }}</div>
+        @endif
+        @if($companyPhone)
+        <div class="company-info">Tel: {{ $companyPhone }}</div>
+        @endif
+        @if($companyEmail)
+        <div class="company-info">Email: {{ $companyEmail }}</div>
+        @endif
     </div>
 
     <div class="receipt-title">SALES RECEIPT</div>

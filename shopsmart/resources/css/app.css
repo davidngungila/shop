@@ -12,4 +12,18 @@
     --font-sans: 'DM Sans', 'Roboto', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
     --font-mono: 'DM Mono', ui-monospace, monospace;
+    
+    /* ShopSmart Brand Colors */
+    --color-primary: #009245;
+    --color-primary-dark: #007a38;
+}
+
+/* Custom button styles for ShopSmart brand color */
+.btn-primary {
+    background-color: #009245 !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: #007a38 !important;
 }
